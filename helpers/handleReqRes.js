@@ -10,6 +10,7 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const routes = require('../routes');
 const { notFoundHandler } = require('../handlers/routeHandlers/notFoundHandler');
+const { parseJSON } = require('./utilities');
 
 // modue scaffolding
 const handler = {};
@@ -38,8 +39,6 @@ handler.handleReqRes = (req, res) => {
 
     const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
 
-   
-
     req.on('data', (buffer) => {
         realData += decoder.write(buffer);
     });
@@ -47,18 +46,19 @@ handler.handleReqRes = (req, res) => {
     req.on('end', () => {
         realData += decoder.end();
 
+        requestProperties.body = parseJSON(realData);
+
         chosenHandler(requestProperties, (statusCode, payload) => {
-            statusCode = typeof statusCode === 'number' ? statusCode : 500;
-            payload = typeof payload === 'object' ? payload : {};
-    
-            const payloadString = JSON.stringify(payload);
-    
+            const statusCodes = typeof statusCode === 'number' ? statusCode : 500;
+            const payloads = typeof payload === 'object' ? payload : {};
+
+            const payloadString = JSON.stringify(payloads);
+
             // return the final response
-            res.writeHead(statusCode);
+            res.setHeader('Content-Type', 'application/json');
+            res.writeHead(statusCodes);
             res.end(payloadString);
         });
-        // response handle
-        res.end('Hello world');
     });
 };
 
