@@ -1,9 +1,8 @@
-/* eslint-disable no-underscore-dangle */
 /*
  * Title: Token Handler
  * Description: Handler to handle token related routes
- * Author: Sumit Saha ( Learn with Sumit )
- * Date: 12/05/2020
+ * Author:MD.Atiqul HAque
+ * Date: 09/07/2021
  *
  */
 // dependencies
@@ -18,14 +17,17 @@ const handler = {};
 handler.tokenHandler = (requestProperties, callback) => {
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
     if (acceptedMethods.indexOf(requestProperties.method) > -1) {
+        // eslint-disable-next-line no-underscore-dangle
         handler._token[requestProperties.method](requestProperties, callback);
     } else {
         callback(405);
     }
 };
 
+// eslint-disable-next-line no-underscore-dangle
 handler._token = {};
 
+// eslint-disable-next-line no-underscore-dangle
 handler._token.post = (requestProperties, callback) => {
     const phone =
         typeof requestProperties.body.phone === 'string' &&
@@ -55,7 +57,6 @@ handler._token.post = (requestProperties, callback) => {
                     if (!err2) {
                         callback(200, tokenObject);
                     } else {
-                        console.log(err2);
                         callback(500, {
                             error: 'There was a problem in the server side!',
                         });
@@ -74,6 +75,7 @@ handler._token.post = (requestProperties, callback) => {
     }
 };
 
+// eslint-disable-next-line no-underscore-dangle
 handler._token.get = (requestProperties, callback) => {
     // check the id if valid
     const id =
